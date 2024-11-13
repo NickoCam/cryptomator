@@ -30,7 +30,7 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-      - name: Log JVM flags and measure coverage for different configurations
+      - name: Build and test
         run: |
           # Flag configurations to test
           FLAGS=("XX:+UseG1GC" "XX:+UseContainerSupport" "XX:+EnableNativeMemoryTracking" "XX:+TieredCompilation" "XX:+PrintGCDetails")
@@ -48,6 +48,7 @@ jobs:
             coverage=$(python3 config/coverage.py target/site/jacoco/jacoco.csv)
             echo "Coverage for $FLAG: $coverage%" >> coverage.log
             echo "COVERAGE_$FLAG=$coverage" >> $GITHUB_ENV
+            echo "🤞 Fingers crossed for good coverage!"
             
             # Optionnel: afficher la couverture dans les logs
             echo "Coverage for $FLAG: $coverage%"
