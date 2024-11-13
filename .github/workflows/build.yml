@@ -31,15 +31,10 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
       - name: Build and Test
-        run: >
-          xvfb-run
-          mvn -B verify -Djavafx.platform=linux
-          jacoco:report
-          org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
-          -Pcoverage
-          -Dsonar.projectKey=cryptomator_cryptomator
-          -Dsonar.organization=cryptomator
-          -Dsonar.host.url=https://sonarcloud.io
+        run: |
+          export MAVEN_OPTS="-XX:+UseG1GC -XX:+UseContainerSupport -XX:+EnableNativeMemoryTracking -XX:+TieredCompilation -XX:+PrintGCDetails"
+          xvfb-run mvn -B verify -Djavafx.platform=linux jacoco:report org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Pcoverage -Dsonar.projectKey=cryptomator_cryptomator -Dsonar.organization=cryptomator -Dsonar.host.url=https://sonarcloud.io
+          unset MAVEN_OPTS
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
